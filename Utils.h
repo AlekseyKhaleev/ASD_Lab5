@@ -21,12 +21,13 @@ struct Person{
         return (NAME == p2.NAME);
     }
 
-    Person(std::string address, std::string phone, std::string snils){
+    Person(std::string name, std::string address, std::string phone, std::string snils){
+        NAME = name;
         ADDRESS = address;
         PHONE = phone;
         SNILS = snils;
     }
-    Person(const Person &copy){
+    Person(Person &copy){
         NAME = copy.NAME;
         ADDRESS = copy.ADDRESS;
         PHONE = copy.ADDRESS;

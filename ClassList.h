@@ -29,7 +29,7 @@ public:
 
     [[nodiscard]] int GetSize() const;
 
-    [[nodiscard]] T Ind(int index) const;
+    [[nodiscard]] T& Ind(int index) const;
 
     void Clear();
 
@@ -125,7 +125,7 @@ void List<T>::PushBack(T data)
 {
     if (head == nullptr)
     {
-        head = new Node(data);
+        head = new Node(&data);
     } else
     {
         Node *current = this->head;
@@ -133,7 +133,7 @@ void List<T>::PushBack(T data)
         {
             current = current->pNext;
         }
-        current->pNext = new Node(data);
+        current->pNext = new Node(&data);
     }
     size++;
 }
@@ -149,7 +149,7 @@ int List<T>::GetSize() const{
 template<typename T>
 T List<T>::PopFront()
 {
-    T value = head->data;
+    T value = *head->data;
     Node *temp = head;
     head = head->pNext;
     delete temp;
@@ -223,7 +223,7 @@ void List<T>::Swap(int firstInd, int secondInd)
 
 
 template<typename T>
-T List<T>::Ind(int index) const
+T& List<T>::Ind(int index) const
 {
     int counter{0};
     Node *current = this->head;
@@ -231,7 +231,7 @@ T List<T>::Ind(int index) const
     {
         if (counter == index)
         {
-            return current->data;
+            return *current->data;
         }
         current = current->pNext;
         counter++;

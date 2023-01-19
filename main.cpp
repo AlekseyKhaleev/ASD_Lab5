@@ -4,7 +4,9 @@
 #include "Utils.h"
 
 int main() {
-    auto *table = new HashTable<Person>;
+    auto *table = new HashTable;
+    auto *header = new Person("Name", "Address", "Phone", "SNILS");
+    table->Add(header->NAME, *header);
     table->Print();
     std::string input;
     std::string separateIn[5];
@@ -32,7 +34,7 @@ int main() {
 
         switch (UserChoice(separateIn[0])){
             case add:{
-                Person newPerson(separateIn[2], separateIn[3], separateIn[4]);
+                Person newPerson(separateIn[1],separateIn[2], separateIn[3], separateIn[4]);
                 table->Add(separateIn[1], newPerson);
                 table->Print();
                 break;
