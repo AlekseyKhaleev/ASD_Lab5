@@ -98,18 +98,19 @@ public:
         return nullptr;
     }
 
-    void Print(const std::string &key = "") {
-        std::cout << " | NAME";
-        std::cout << " | ADDRESS";
-        std::cout << " | PHONE";
-        std::cout << " | SNILS";
-        std::cout << " |\n";
 
+
+    void Print(const std::string &key = "") {
+        std::string header = MakeTableRow("NAME","ADDRESS","PHONE","SNILS");
         if (!key.empty()) {
             const Person *target;
-            if ((target = Find(key))) target->Print();
+            if ((target = Find(key))) {
+                std::cout <<header;
+                target->Print();
+            }
             else std::cout << "Key '" << key << "' not found\n";
         } else {
+            std::cout <<header;
             for (int i = 0; i < m_tableSize; i++) {
                 if (!m_items[i].IsEmpty()) {
                     Node<Person> *current = m_items[i].head;

@@ -11,14 +11,8 @@ int main() {
     bool mark = true;
     std::cout<<"Enter command (press 'enter' to learn more about commands):\n";
     while(mark) {
-
-
         std::cout<<">>";
-//        std::cin.clear(); // на случай, если предыдущий ввод завершился с ошибкой
-//        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
         std::getline(std::cin, input);
-
-
         std::string  tmp;
         int i=0;
         for(auto &c:input){
