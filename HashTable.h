@@ -55,7 +55,8 @@ class HashTable
         delete[] arr2;
 
         for (int i = 0; i < previousTableSize; ++i) {
-            buckets2[i]->Clear();
+            delete buckets2[i];
+            buckets2[i] = nullptr;
             }
         delete[] buckets2;
 
@@ -105,8 +106,10 @@ public:
         delete[] m_items;
 
         for (int i = 0; i < m_tableSize; ++i)
-            if (m_buckets[i])
+            if (m_buckets[i]) {
                 delete m_buckets[i];
+                m_buckets[i] = nullptr;
+            }
         delete[] m_buckets;
     }
 
@@ -168,6 +171,7 @@ public:
                     // удаляем item и меняем "голову" связного списка
 
                     delete[] item;
+                    item = nullptr;
                     Person tmp = bucketHead->PopFront();
                     m_items[index] = new Person(tmp);
                     return;
