@@ -11,6 +11,8 @@
 
 int UserChoice(const std::string& text);
 
+
+
 struct Person{
     std::string NAME;
     std::string ADDRESS;
@@ -19,6 +21,9 @@ struct Person{
 
     bool operator == (const Person &p2) const {
         return (NAME == p2.NAME);
+    }
+    bool operator == (const std::string &p2) const {
+        return (NAME == p2);
     }
 
     Person(const std::string &name, const std::string &address, const std::string &phone, const std::string &snils){

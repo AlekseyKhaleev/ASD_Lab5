@@ -1,23 +1,23 @@
 #include <iostream>
+#include <limits>
 
 #include "HashTable.h"
 #include "Utils.h"
 
 int main() {
     auto *table = new HashTable;
-    table->Print();
     std::string input;
     std::string separateIn[5];
     bool mark = true;
+    std::cout<<"Enter command (press 'enter' to learn more about commands):\n";
     while(mark) {
-        std::cout<<"\n\nUse these commands to work with the table:\n\n";
-        std::cout<<"Print HashTable    : print\n";
-        std::cout<<"Add a person       : add 'name' 'address' 'phone' 'snils'\n";
-        std::cout<<"Delete a person    : remove 'name'\n";
-        std::cout<<"Find person's data : find 'name'\n";
-        std::cout<<"Exit               : exit\n\n";
 
+
+        std::cout<<">>";
+//        std::cin.clear(); // на случай, если предыдущий ввод завершился с ошибкой
+//        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
         std::getline(std::cin, input);
+
 
         std::string  tmp;
         int i=0;
@@ -39,12 +39,10 @@ int main() {
             case add:{
                 Person newPerson(separateIn[1],separateIn[2], separateIn[3], separateIn[4]);
                 table->Add(newPerson);
-                table->Print();
                 break;
             }
             case remove:{
                 table->Remove(separateIn[1]);
-                table->Print();
                 break;
             }
             case find:{
@@ -53,6 +51,16 @@ int main() {
             }
             case exit:{
                 mark = false;
+                break;
+            }
+            default:{
+                std::cout<<"\nUse these commands to work with the table:\n\n";
+                std::cout<<"Print HashTable    : print\n";
+                std::cout<<"Add a person       : add 'name' 'address' 'phone' 'snils'\n";
+                std::cout<<"Delete a person    : remove 'name'\n";
+                std::cout<<"Find person's data : find 'name'\n";
+                std::cout<<"Exit               : exit\n\n";
+                std::cout<<"Enter command (press 'enter' to learn more about commands):\n";
                 break;
             }
         }
