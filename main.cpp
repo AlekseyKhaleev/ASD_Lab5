@@ -6,7 +6,7 @@
 int main() {
     auto *table = new HashTable;
     auto *header = new Person("Name", "Address", "Phone", "SNILS");
-    table->Add(header->NAME, *header);
+    table->Add(*header);
     table->Print();
     std::string input;
     std::string separateIn[5];
@@ -15,7 +15,7 @@ int main() {
         std::cout<<"\n\nUse these commands to work with the table:\n\n";
         std::cout<<"Add a person       : add 'name' 'address' 'phone' 'snils'\n";
         std::cout<<"Delete a person    : remove 'name'\n";
-        std::cout<<"Find person's data : find 'name'\n";
+        std::cout<<"Find person's m_data : find 'name'\n";
         std::cout<<"Exit               : exit\n\n";
 
         std::getline(std::cin, input);
@@ -35,7 +35,7 @@ int main() {
         switch (UserChoice(separateIn[0])){
             case add:{
                 Person newPerson(separateIn[1],separateIn[2], separateIn[3], separateIn[4]);
-                table->Add(separateIn[1], newPerson);
+                table->Add(newPerson);
                 table->Print();
                 break;
             }

@@ -27,7 +27,7 @@ struct Person{
         PHONE = phone;
         SNILS = snils;
     }
-    Person(Person &copy){
+    Person(Person const &copy){
         NAME = copy.NAME;
         ADDRESS = copy.ADDRESS;
         PHONE = copy.ADDRESS;

@@ -11,35 +11,28 @@
 class HashTable
 {
     static const int DEFAULT_TABLE_SIZE = 8;
-    constexpr static const double RESIZE_TABLE_FACTOR = 0.75;
-//    struct Item
-//    {
-//        Person value;
-//        explicit Item(Person& value_) : value(value_) {}
-//    };
-
-    int m_allCnt;
+    int m_bucketCnt;
+    int m_itemCnt;
     int m_tableSize;
-    int m_validCnt;
 
-    Person** m_items;
-    List<Person>** m_buckets;
+    Person **m_items;
+    List<Person> **m_buckets;
     List<int> m_validIndexes;
 
     void Resize()
     {
         int previousTableSize = m_tableSize;
         m_tableSize *= 2;
-        m_allCnt = 0;
-        m_validCnt = 0;
+        m_bucketCnt = 0;
+        m_itemCnt =0;
 
-        auto** arr2 = new Person * [m_tableSize];
+        auto** arr2 = new Person  *[m_tableSize];
         for (int i = 0; i < m_tableSize; ++i)
             arr2[i] = nullptr;
         std::swap(m_items, arr2);
         for (int i = 0; i < previousTableSize; ++i)        {
             if (arr2[i]) {
-                Add(arr2[i]->NAME,*arr2[i]);
+                Add(*arr2[i]);
             }
         }
         auto** buckets2 = new List<Person>*[m_tableSize];
@@ -51,7 +44,7 @@ class HashTable
             if (buckets2[i]){
                 for(int j=0; j<buckets2[i]->GetSize(); j++){
 
-                    Add(buckets2[i]->Ind(j).NAME, buckets2[i]->Ind(j));
+                    Add(buckets2[i]->Ind(j));
                 }
             }
         }
@@ -70,13 +63,14 @@ class HashTable
 
 
 
-    void HandleCollision(int index, Person item) {
+    void HandleCollision(int index, Person &item) {
         List<Person> *head = m_buckets[index];
         if (head == nullptr) {
             // Необходимо создать список
             head = new List<Person>;
             head->PushBack(item);
             m_buckets[index] = head;
+            m_bucketCnt++;
             return;
         } else {
             // Добавляем в список
@@ -90,8 +84,8 @@ public:
     HashTable()
     {
         m_tableSize = DEFAULT_TABLE_SIZE;
-        m_validCnt = 0;
-        m_allCnt = 0;
+        m_itemCnt = 0;
+        m_bucketCnt = 0;
 
         m_items = new Person*[m_tableSize];
         for (int i = 0; i < m_tableSize; ++i)
@@ -116,9 +110,9 @@ public:
         delete[] m_buckets;
     }
 
-    void Add(const std::string & key, Person& value)
+    void Add(Person& value)
     {
-        if (m_validCnt + 1 > int(RESIZE_TABLE_FACTOR * m_tableSize)){
+        if (m_bucketCnt > m_itemCnt/2){
             Resize();
         }
 
@@ -126,21 +120,18 @@ public:
         auto* item = new Person(value);
 
         // Compute the index
-        int index = HashMidSquare(key, m_tableSize);
+        int index = HashMidSquare(value.NAME, m_tableSize);
 
         if (m_items[index] == nullptr) {
             // Key does not exist.
                        // Insert directly
             m_items[index] = item;
-            m_validCnt++;
-            m_allCnt++;
+            m_itemCnt++;
         }
-
         else {
             // Scenario 1: We only need to update value
-            if (m_items[index]->NAME ==  key) {
+            if (m_items[index]->NAME ==  value.NAME) {
                 *m_items[index] = value;
-//                m_items[index]->value.NAME = key;
                 return;
             }
 
@@ -159,7 +150,7 @@ public:
         Person *item = m_items[index];
         List<Person> *bucketHead = m_buckets[index];
 
-        // Если бакет пуст
+        // Если бакет пуст и элемента нет в таблице
         if (item == nullptr) {
             return;
         }
@@ -168,7 +159,7 @@ public:
                 // Нет коллизий. Удаляем item
                 m_items[index] = nullptr;
                 delete[] item;
-                m_validCnt--;
+                m_itemCnt--;
                 return;
             }
             else if (bucketHead != nullptr) {
@@ -177,7 +168,6 @@ public:
                     // удаляем item и меняем "голову" связного списка
 
                     delete[] item;
-                    m_validCnt--;
                     Person tmp = bucketHead->PopFront();
                     m_items[index] = new Person(tmp);
                     return;
@@ -185,7 +175,7 @@ public:
                 for(int i=0; i<bucketHead->GetSize(); i++){
                     if(bucketHead->Ind(i).NAME == key){
                         bucketHead->RemoveAt(i);
-                        m_validCnt--;
+                        if(m_buckets[index] == nullptr) m_bucketCnt--;
                         return;
                     }
 

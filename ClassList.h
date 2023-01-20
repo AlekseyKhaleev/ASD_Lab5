@@ -11,7 +11,7 @@ public:
     //Конструкторы
     List();
 
-    List(List<T> const &); //copy
+    List(const List<T>  &); //copy
     List<T> &operator=(const List<T> &);
 
     List(List<T> &&) noexcept; //move
@@ -21,11 +21,9 @@ public:
     ~List();
 
     //Методы
-    void PushBack(T);
+    void PushBack(T&);
 
     T PopFront();
-
-    void Swap(int firstInd, int secondInd);
 
     [[nodiscard]] int GetSize() const;
 
@@ -41,13 +39,12 @@ private:
     class Node
     {
     public:
-        Node *pNext;
-        T *data;
+        Node *m_pNext;
+        T &m_data;
 
-        explicit Node(T *data, Node *pNext = nullptr)
+        explicit Node(T &data, Node *pNext = nullptr): m_data(data)
         {
-            this->data = data;
-            this->pNext = pNext;
+            m_pNext = pNext;
         }
     };
 
@@ -121,19 +118,19 @@ List<T>::~List()
 }
 
 template<typename T>
-void List<T>::PushBack(T data)
+void List<T>::PushBack(T &data)
 {
     if (head == nullptr)
     {
-        head = new Node(&data);
+        head = new Node(data);
     } else
     {
         Node *current = this->head;
-        while (current->pNext != nullptr)
+        while (current->m_pNext != nullptr)
         {
-            current = current->pNext;
+            current = current->m_pNext;
         }
-        current->pNext = new Node(&data);
+        current->m_pNext = new Node(data);
     }
     size++;
 }
@@ -149,9 +146,9 @@ int List<T>::GetSize() const{
 template<typename T>
 T List<T>::PopFront()
 {
-    T value = *head->data;
+    T value = head->m_data;
     Node *temp = head;
-    head = head->pNext;
+    head = head->m_pNext;
     delete temp;
     size--;
     return value;
@@ -169,60 +166,6 @@ void List<T>::Clear()
 
 
 template<typename T>
-void List<T>::Swap(int firstInd, int secondInd)
-{
-    Node *p1, *prev_p1, *p2, *prev_p2, *tmp_pos;
-    if(firstInd){
-        prev_p2 = head;
-        for(int i = 1; i < firstInd; i++)
-            prev_p2 = prev_p2->pNext;
-        p2 = prev_p2->pNext;}
-    else{
-// если индекс равен нулю, то предыдущий указатель 0
-        prev_p2=0;p2=head;}
-
-    if(secondInd){
-        prev_p1 = head;
-        for(int i = 1; i < secondInd; i++)
-            prev_p1 = prev_p1->pNext;
-        p1 = prev_p1->pNext;}
-    else{
-// если индекс равен нулю, то предыдущий указатель 0
-        prev_p1=0;p1=head;}
-
-    if(p2->pNext == p1){
-// если элементы находятся рядом, то обмен делаем по-другому
-        p2->pNext = p1->pNext;
-        p1->pNext=p2;
-// проверяем, есть-ли предыдущий
-        if(prev_p2)prev_p2->pNext=p1;}
-
-    else
-
-    if(p1->pNext == p2){
-// если элементы находятся рядом, то обмен делаем по-другому
-        p1->pNext = p2->pNext;
-        p2->pNext =p1;
-// проверяем, есть-ли предыдущий
-        if(prev_p1)prev_p1->pNext=p2;}
-
-    else{
-// стандартный обмен
-        tmp_pos = p1->pNext;
-        p1->pNext = p2->pNext;
-        p2->pNext = tmp_pos;
-// проверяем, есть-ли предыдущий
-        if(prev_p1)          prev_p1->pNext = p2;
-        if(prev_p2)          prev_p2->pNext = p1; }
-
-// если индекс был в начале, то меняем начало в классе
-    if(firstInd == 0)head = p1;
-    if(secondInd == 0)head = p2;
-
-}
-
-
-template<typename T>
 T& List<T>::Ind(int index) const
 {
     int counter{0};
@@ -231,9 +174,9 @@ T& List<T>::Ind(int index) const
     {
         if (counter == index)
         {
-            return *current->data;
+            return current->m_data;
         }
-        current = current->pNext;
+        current = current->m_pNext;
         counter++;
     }
     throw std::exception();
@@ -246,8 +189,8 @@ int List<T>::FindValue(T value){
     int index=0;
     Node* tmp = head;
     while(tmp != nullptr){
-        if (tmp->data == value) return index;
-        tmp=tmp->pNext;
+        if (tmp->m_data == value) return index;
+        tmp=tmp->m_pNext;
         index++;
     }
     return -1;
@@ -269,10 +212,10 @@ void List<T>::RemoveAt(int index)
         Node *previous = this->head;
         for (int i = 0; i < index - 1; i++)
         {
-            previous = previous->pNext;
+            previous = previous->m_pNext;
         }
-        Node *temp = previous->pNext;
-        previous->pNext = temp->pNext;
+        Node *temp = previous->m_pNext;
+        previous->m_pNext = temp->m_pNext;
         delete[] temp;
     }
     size--;
