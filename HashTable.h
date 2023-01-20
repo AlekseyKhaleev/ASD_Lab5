@@ -8,8 +8,7 @@
 
 
 
-class HashTable
-{
+class HashTable {
     static const int DEFAULT_TABLE_SIZE = 8;
     int m_bucketCnt;
     int m_itemCnt;
@@ -19,14 +18,13 @@ class HashTable
     List<Person> **m_buckets;
     List<int> m_validIndexes;
 
-    void Resize()
-    {
+    void Resize() {
         int previousTableSize = m_tableSize;
         m_tableSize *= 2;
         m_bucketCnt = 0;
-        m_itemCnt =0;
+        m_itemCnt = 0;
 
-        auto** arr2 = new Person  *[m_tableSize];
+        auto **arr2 = new Person *[m_tableSize];
         for (int i = 0; i < m_tableSize; ++i) {
             arr2[i] = nullptr;
         }
@@ -36,31 +34,22 @@ class HashTable
                 Add(*arr2[i]);
             }
         }
-        auto** buckets2 = new List<Person>*[m_tableSize];
-        for(int i=0;i<m_tableSize;i++){
+        auto **buckets2 = new List<Person> *[m_tableSize];
+        for (int i = 0; i < m_tableSize; i++) {
             buckets2[i] = nullptr;
         }
         std::swap(m_buckets, buckets2);
-        for(int i=0; i <previousTableSize; i++) {
+        for (int i = 0; i < previousTableSize; i++) {
             if (buckets2[i]) {
                 m_buckets[i] = buckets2[i];
             }
         }
 
-
         for (int i = 0; i < previousTableSize; ++i) {
             delete arr2[i];
         }
         delete[] arr2;
-
-//        for (int i = 0; i < previousTableSize; ++i) {
-//            delete buckets2[i];
-//            buckets2[i] = nullptr;
-//            }
-//        delete[] buckets2;
-
     }
-
 
 
     void HandleCollision(int index, Person &item) {
@@ -81,24 +70,22 @@ class HashTable
 
 
 public:
-    HashTable()
-    {
+    HashTable() {
         m_tableSize = DEFAULT_TABLE_SIZE;
         m_itemCnt = 0;
         m_bucketCnt = 0;
 
-        m_items = new Person*[m_tableSize];
+        m_items = new Person *[m_tableSize];
         for (int i = 0; i < m_tableSize; ++i)
             m_items[i] = nullptr;
 
         m_buckets = (new List<Person> *[m_tableSize]);
-        for (int i=0; i<m_tableSize; i++)
+        for (int i = 0; i < m_tableSize; i++)
             m_buckets[i] = nullptr;
 
     }
 
-    ~HashTable()
-    {
+    ~HashTable() {
         for (int i = 0; i < m_tableSize; ++i)
             if (m_items[i])
                 delete m_items[i];
@@ -112,32 +99,28 @@ public:
         delete[] m_buckets;
     }
 
-    void Add(Person& value)
-    {
-        if (m_bucketCnt > m_itemCnt/2){
+    void Add(Person &value) {
+        if (m_bucketCnt > m_itemCnt / 2) {
             Resize();
         }
 
         // Create the item
-        auto* item = new Person(value);
+        auto *item = new Person(value);
 
         // Compute the index
         int index = HashMidSquare(value.NAME, m_tableSize);
 
         if (m_items[index] == nullptr) {
             // Key does not exist.
-                       // Insert directly
+            // Insert directly
             m_items[index] = item;
             m_itemCnt++;
-        }
-        else {
+        } else {
             // Scenario 1: We only need to update value
-            if (m_items[index]->NAME ==  value.NAME) {
+            if (m_items[index]->NAME == value.NAME) {
                 *m_items[index] = value;
                 return;
-            }
-
-            else {
+            } else {
                 // Scenario 2: Collision
                 HandleCollision(index, *item);
                 return;
@@ -146,8 +129,7 @@ public:
     }
 
 
-    void Remove(const std::string &key)
-    {
+    void Remove(const std::string &key) {
         int index = HashMidSquare(key, m_tableSize);
         Person *item = m_items[index];
         List<Person> *bucketHead = m_buckets[index];
@@ -155,16 +137,14 @@ public:
         // Если бакет пуст и элемента нет в таблице
         if (item == nullptr) {
             return;
-        }
-        else {
-            if ((bucketHead == nullptr) && (item->NAME== key)) {
+        } else {
+            if ((bucketHead == nullptr) && (item->NAME == key)) {
                 // Нет коллизий. Удаляем item
                 m_items[index] = nullptr;
                 delete item;
                 m_itemCnt--;
                 return;
-            }
-            else if (bucketHead != nullptr) {
+            } else if (bucketHead != nullptr) {
                 // Существует цепочка коллизий
                 if (item->NAME == key) {
                     // удаляем item и меняем "голову" связного списка
@@ -172,15 +152,15 @@ public:
                     delete item;
                     Person tmp = bucketHead->PopFront();
                     m_items[index] = new Person(tmp);
-                    if (bucketHead->IsEmpty()){
+                    if (bucketHead->IsEmpty()) {
                         m_buckets[index] = nullptr;
                     }
                     return;
                 }
-                for(int i=0; i<bucketHead->GetSize(); i++){
-                    if(bucketHead->Ind(i).NAME == key){
+                for (int i = 0; i < bucketHead->GetSize(); i++) {
+                    if (bucketHead->Ind(i).NAME == key) {
                         bucketHead->RemoveAt(i);
-                        if (bucketHead->IsEmpty()){
+                        if (bucketHead->IsEmpty()) {
                             m_buckets[index] = nullptr;
                             m_bucketCnt--;
                         }
@@ -193,8 +173,7 @@ public:
         }
     }
 
-    Person* Find(const std::string &key)
-    {
+    const Person *Find(const std::string &key) {
 
         // Searches the key in the hashtable
         // and returns NULL if it doesn't exist
@@ -206,39 +185,38 @@ public:
         if (item != nullptr) {
             if (item->NAME == key)
                 return item;
-            if ( m_buckets[index]== nullptr)
+            if (m_buckets[index] == nullptr)
                 return nullptr;
-            for (int i=0; i < m_buckets[index]->GetSize(); i++){
-                if(m_buckets[index]->Ind(i).NAME == key) return &m_buckets[index]->Ind(i);
+            for (int i = 0; i < m_buckets[index]->GetSize(); i++) {
+                if (m_buckets[index]->Ind(i).NAME == key) return &m_buckets[index]->Ind(i);
             }
         }
         return nullptr;
     }
 
-    void Print(){
-        std::cout<<" | NAME";
-        std::cout<<" | ADDRESS";
-        std::cout<<" | PHONE";
-        std::cout<<" | SNILS";
-        std::cout<<" |\n";
-        for(int i=0; i< m_tableSize; i++){
-            if (m_items[i] != nullptr){
-                std::cout<<" | "<<m_items[i]->NAME;
-                std::cout<<" | "<<m_items[i]->ADDRESS;
-                std::cout<<" | "<<m_items[i]->PHONE;
-                std::cout<<" | "<<m_items[i]->SNILS;
-                std::cout<<" |\n";
-                if(m_buckets[i] != nullptr){
-                    for(int j=0; j<m_buckets[i]->GetSize();j++){
-                        std::cout<<" | "<<m_buckets[i]->Ind(j).NAME;
-                        std::cout<<" | "<<m_buckets[i]->Ind(j).ADDRESS;
-                        std::cout<<" | "<<m_buckets[i]->Ind(j).PHONE;
-                        std::cout<<" | "<<m_buckets[i]->Ind(j).SNILS;
-                        std::cout<<" |\n";
+    void Print(const std::string &key = "") {
+        std::cout << " | NAME";
+        std::cout << " | ADDRESS";
+        std::cout << " | PHONE";
+        std::cout << " | SNILS";
+        std::cout << " |\n";
+
+        if (!key.empty()) {
+            const Person *target;
+            if ((target = Find(key))) target->Print();
+            else std::cout<<"Key '"<<key<<"' not found\n";
+        } else
+        {
+            for (int i = 0; i < m_tableSize; i++) {
+                if (m_items[i] != nullptr) {
+                    m_items[i]->Print();
+                    if (m_buckets[i] != nullptr) {
+                        for (int j = 0; j < m_buckets[i]->GetSize(); j++) {
+                            m_buckets[i]->Ind(j).Print();
+                        }
                     }
                 }
             }
         }
     }
 };
-

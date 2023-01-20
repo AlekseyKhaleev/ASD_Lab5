@@ -3,10 +3,11 @@
 #include <string>
 #include "ClassList.h"
 
-#define add    0
-#define remove 1
-#define find   2
-#define exit   3
+#define print  0
+#define add    1
+#define remove 2
+#define find   3
+#define exit   4
 
 int UserChoice(const std::string& text);
 
@@ -16,8 +17,7 @@ struct Person{
     std::string PHONE;
     std::string SNILS;
 
-    bool operator == (const Person &p2) const
-    {
+    bool operator == (const Person &p2) const {
         return (NAME == p2.NAME);
     }
 
@@ -32,6 +32,13 @@ struct Person{
         ADDRESS += copy.ADDRESS;
         PHONE += copy.PHONE;
         SNILS += copy.SNILS;
+    }
+    void Print() const{
+        std::cout<<" | "<<NAME;
+        std::cout<<" | "<<ADDRESS;
+        std::cout<<" | "<<PHONE;
+        std::cout<<" | "<<SNILS;
+        std::cout<<" |\n";
     }
 };
 

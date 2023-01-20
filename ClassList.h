@@ -38,14 +38,12 @@ public:
     bool IsEmpty();
 
 private:
-    class Node
-    {
+    class Node {
     public:
         Node *m_pNext;
-        T &m_data;
+        T m_data;
 
-        explicit Node(T &data, Node *pNext = nullptr): m_data(data)
-        {
+        explicit Node(const T &data, Node *pNext = nullptr): m_data(data) {
             m_pNext = pNext;
         }
     };
@@ -201,13 +199,11 @@ int List<T>::FindValue(T value){
 template<typename T>
 void List<T>::RemoveAt(int index)
 {
-    if (index > size - 1)
-    {
+    if (index > size - 1){
         throw std::exception();
     }
 
-    if (index == 0)
-    {
+    if (index == 0){
         PopFront();
     } else
     {
