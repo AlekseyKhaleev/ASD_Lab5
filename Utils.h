@@ -8,7 +8,7 @@
 #define find   2
 #define exit   3
 
-int UserChoice(std::string text);
+int UserChoice(const std::string& text);
 
 struct Person{
     std::string NAME;
@@ -21,17 +21,17 @@ struct Person{
         return (NAME == p2.NAME);
     }
 
-    Person(std::string name, std::string address, std::string phone, std::string snils){
-        NAME = name;
-        ADDRESS = address;
-        PHONE = phone;
-        SNILS = snils;
+    Person(const std::string &name, const std::string &address, const std::string &phone, const std::string &snils){
+        NAME += name;
+        ADDRESS += address;
+        PHONE += phone;
+        SNILS += snils;
     }
     Person(Person const &copy){
-        NAME = copy.NAME;
-        ADDRESS = copy.ADDRESS;
-        PHONE = copy.PHONE;
-        SNILS = copy.SNILS;
+        NAME += copy.NAME;
+        ADDRESS += copy.ADDRESS;
+        PHONE += copy.PHONE;
+        SNILS += copy.SNILS;
     }
 };
 

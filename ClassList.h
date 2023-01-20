@@ -35,6 +35,8 @@ public:
 
     void RemoveAt(int index);
 
+    bool IsEmpty();
+
 private:
     class Node
     {
@@ -219,4 +221,9 @@ void List<T>::RemoveAt(int index)
         delete[] temp;
     }
     size--;
+}
+
+template<typename T>
+bool List<T>::IsEmpty() {
+    return (head == nullptr);
 }

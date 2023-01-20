@@ -5,8 +5,6 @@
 
 int main() {
     auto *table = new HashTable;
-    auto *header = new Person("Name", "Address", "Phone", "SNILS");
-    table->Add(*header);
     table->Print();
     std::string input;
     std::string separateIn[5];

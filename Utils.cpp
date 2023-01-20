@@ -14,7 +14,7 @@ int HashMidSquare(const std::string &s, int table_size) {
     return hash_result % table_size;
 }
 
-int UserChoice(std::string text) {
+int UserChoice(const std::string& text) {
     std::string base[]{"add", "remove", "find", "exit"};
     for(int i=0; i < text.size(); i++){
         if(text==base[i]) return i;

@@ -27,10 +27,11 @@ class HashTable
         m_itemCnt =0;
 
         auto** arr2 = new Person  *[m_tableSize];
-        for (int i = 0; i < m_tableSize; ++i)
+        for (int i = 0; i < m_tableSize; ++i) {
             arr2[i] = nullptr;
+        }
         std::swap(m_items, arr2);
-        for (int i = 0; i < previousTableSize; ++i)        {
+        for (int i = 0; i < previousTableSize; ++i) {
             if (arr2[i]) {
                 Add(*arr2[i]);
             }
@@ -40,25 +41,23 @@ class HashTable
             buckets2[i] = nullptr;
         }
         std::swap(m_buckets, buckets2);
-        for(int i=0; i <previousTableSize; i++){
-            if (buckets2[i]){
-                for(int j=0; j<buckets2[i]->GetSize(); j++){
-
-                    Add(buckets2[i]->Ind(j));
-                }
+        for(int i=0; i <previousTableSize; i++) {
+            if (buckets2[i]) {
+                m_buckets[i] = buckets2[i];
             }
         }
+
 
         for (int i = 0; i < previousTableSize; ++i) {
             delete arr2[i];
         }
         delete[] arr2;
 
-        for (int i = 0; i < previousTableSize; ++i) {
-            delete buckets2[i];
-            buckets2[i] = nullptr;
-            }
-        delete[] buckets2;
+//        for (int i = 0; i < previousTableSize; ++i) {
+//            delete buckets2[i];
+//            buckets2[i] = nullptr;
+//            }
+//        delete[] buckets2;
 
     }
 
@@ -161,7 +160,7 @@ public:
             if ((bucketHead == nullptr) && (item->NAME== key)) {
                 // Нет коллизий. Удаляем item
                 m_items[index] = nullptr;
-                delete[] item;
+                delete item;
                 m_itemCnt--;
                 return;
             }
@@ -170,16 +169,21 @@ public:
                 if (item->NAME == key) {
                     // удаляем item и меняем "голову" связного списка
 
-                    delete[] item;
-                    item = nullptr;
+                    delete item;
                     Person tmp = bucketHead->PopFront();
                     m_items[index] = new Person(tmp);
+                    if (bucketHead->IsEmpty()){
+                        m_buckets[index] = nullptr;
+                    }
                     return;
                 }
                 for(int i=0; i<bucketHead->GetSize(); i++){
                     if(bucketHead->Ind(i).NAME == key){
                         bucketHead->RemoveAt(i);
-                        if(m_buckets[index] == nullptr) m_bucketCnt--;
+                        if (bucketHead->IsEmpty()){
+                            m_buckets[index] = nullptr;
+                            m_bucketCnt--;
+                        }
                         return;
                     }
 
@@ -212,6 +216,11 @@ public:
     }
 
     void Print(){
+        std::cout<<" | NAME";
+        std::cout<<" | ADDRESS";
+        std::cout<<" | PHONE";
+        std::cout<<" | SNILS";
+        std::cout<<" |\n";
         for(int i=0; i< m_tableSize; i++){
             if (m_items[i] != nullptr){
                 std::cout<<" | "<<m_items[i]->NAME;
