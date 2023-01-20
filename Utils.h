@@ -30,7 +30,7 @@ struct Person{
     Person(Person const &copy){
         NAME = copy.NAME;
         ADDRESS = copy.ADDRESS;
-        PHONE = copy.ADDRESS;
+        PHONE = copy.PHONE;
         SNILS = copy.SNILS;
     }
 };
